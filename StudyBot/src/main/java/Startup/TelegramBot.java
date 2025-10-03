@@ -1,6 +1,11 @@
 package Startup;
 
 import Handlers.BotHandler;
+import Handlers.BotHandler.BotState;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -23,17 +28,23 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String chatId = update.getMessage().getChatId().toString();
-            String messageFromUser = update.getMessage().getText();
+            long userId = update.getMessage().getFrom().getId();
+            String messageText = update.getMessage().getText();
+            String reply = botHandler.Handle(messageText,userId);
 
-            String reply = botHandler.Handle(messageFromUser);
-
-            SendMessage message = new SendMessage(chatId, reply);
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            sendMessage(userId, reply);
+                    
+        }
+    }
+     private void sendMessage(Long chatId, String text) {
+        // Метод для отправки сообщений
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId.toString());
+        message.setText(text);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 }
