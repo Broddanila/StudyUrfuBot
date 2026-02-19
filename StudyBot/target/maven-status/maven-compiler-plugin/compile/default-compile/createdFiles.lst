@@ -1,0 +1,11 @@
+Handlers\DbConnector.class
+Handlers\Commands\Interfaces\Command.class
+Handlers\Homework.class
+Handlers\BotHandler.class
+Handlers\BotHandler$BotState.class
+Handlers\Commands\ProcessScheduleInputCommand.class
+Handlers\Commands\ShowScheduleCommand.class
+Startup\Config.class
+Startup\Main.class
+Handlers\Commands\FinishHomeworkCommand.class
+Startup\TelegramBot.class
