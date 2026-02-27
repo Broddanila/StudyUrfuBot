@@ -1,12 +1,17 @@
 package Handlers;
 import java.util.*;
+import java.util.EnumSet;
 import Handlers.Commands.FinishHomeworkCommand;
 import Handlers.Commands.ProcessScheduleInputCommand;
 import Handlers.Commands.ShowScheduleCommand;
 
 public class BotHandler {
     private Map<Long, BotState> userStates = new HashMap<>();
-    
+    private static final Set<BotState> ACTIVE_STATES = EnumSet.of(
+        BotState.WAITING_FOR_LESSON,
+        BotState.WAITING_FOR_HOMEWORK,
+        BotState.WAITING_FOR_EDIT
+    );
     public enum BotState {
         SLEEP,
         WAITING_FOR_LESSON,
@@ -41,6 +46,14 @@ public class BotHandler {
                 userStates.put(userId, BotState.WAITING_FOR_EDIT);
                 return "Введите расписание в формате: (названиепредмета1 названиепредмета2)(названиепредмета3 названиепредмета4 названиепредмета5)()(названиепредмета6)()()()\n" +
                        "Скобки — разные дни, начиная с понедельника. Предметы внутри скобок разделяйте пробелами.";
+            case "/cancel":
+                if (ACTIVE_STATES.contains(state)) {
+                    userStates.put(userId, BotState.SLEEP);
+                    return "Действие отменено. Вы можете выбрать новую команду.";
+                }    
+                else {
+                    return "Нет активного действия для отмены.";
+                }
             default:
                 if (state == BotState.SLEEP) {
                     return reply;
